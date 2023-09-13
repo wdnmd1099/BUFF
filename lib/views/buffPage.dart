@@ -21,26 +21,26 @@ class _BuffPageState extends State<BuffPage> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize:
-              Size.fromHeight(MediaQuery.of(context).size.height * 0.05),
+              Size.fromHeight(MediaQuery.of(context).size.height * 0.06),
           child: AppBar(
             titleSpacing: 0,
-            backgroundColor: Colors.white,
+            backgroundColor: Color.fromRGBO(250, 250, 250, 1),
             shadowColor: Colors.transparent,
             // leading:Container(color: Colors.orange,),
             title: Container(
-              color: Color.fromRGBO(250, 250, 250, 1),
+              color: Color.fromRGBO(250, 250, 250, 1),  //Color.fromRGBO(250, 250, 250, 1)
               height: maxHeight,
               width: maxWidth,
               child: const Row(
                 children: [
                   Expanded(
                     child: TabBar(
-                      labelPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                      labelPadding: EdgeInsets.symmetric(horizontal: 6.0),
                       indicatorSize: TabBarIndicatorSize.label,
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.grey,
-                      labelStyle: TextStyle(fontSize: 14),
-                      unselectedLabelStyle: TextStyle(fontSize: 12),
+                      labelColor: Color.fromRGBO(62, 62, 62,1),
+                      unselectedLabelColor: Color.fromRGBO(188, 188, 188,1),
+                      labelStyle: TextStyle(fontSize: 18),
+                      unselectedLabelStyle: TextStyle(fontSize: 14),
                       indicatorWeight: 0.001,
                       isScrollable: true,
                       tabs: [
@@ -61,12 +61,29 @@ class _BuffPageState extends State<BuffPage> {
               ),
             ),
             actions: [
-              Center(
-                child: SvgPicture.string(
-                  icon, // 替换为您自己的 SVG 图像路径
-                  width: 20.0, // 设置 SVG 图像的宽度
-                  height: 20.0, // 设置 SVG 图像的高度
-                ),
+              Row(
+                children: [
+                   Center(
+                    child:GestureDetector(
+                      onTap: ()=>{  test()  },
+                      child: Container(
+                        height: maxHeight,
+                        padding: EdgeInsets.only(left: 8),
+                        child: Icon(Icons.menu,color: Colors.grey,size: 14,),
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      padding: EdgeInsets.only(right: 12,left: 8),
+                      child: SvgPicture.string(
+                        icon, // 替换为您自己的 SVG 图像路径
+                        width: 20.0, // 设置 SVG 图像的宽度
+                        height: 20.0, // 设置 SVG 图像的高度
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -88,4 +105,8 @@ class _BuffPageState extends State<BuffPage> {
       ),
     );
   }
+}
+
+void test(){
+  print('qifei');
 }
