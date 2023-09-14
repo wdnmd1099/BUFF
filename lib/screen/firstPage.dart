@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:coffee/临时数据/测试.dart';
 
 class FirstPage extends StatefulWidget {
-  const FirstPage({super.key});
+  const FirstPage({super.key,});
 
   @override
   State<FirstPage> createState() => _FirstPageState();
@@ -12,11 +12,11 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
   final ScrollController _scrollController = ScrollController();
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _scrollController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +25,7 @@ class _FirstPageState extends State<FirstPage> {
     Widget con = cont(context);
 
     return  CustomScrollView(
+
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildBuilderDelegate(

@@ -4,7 +4,6 @@ GlobalKey globalKey = GlobalKey();
 
 void main() => runApp(
   MaterialApp(
-    debugShowCheckedModeBanner: false,
     home: MyApp(),
   ),
 );
@@ -44,21 +43,29 @@ class _MyAppState extends State<MyApp> {
     // offset.dx , offset.dy 就是控件的左上角坐标
     var offset = renderBox.localToGlobal(Offset.zero);
     double offsetY = offset.dy;
-    if (_shouldPinned == true && offsetY <= 147) {
+    if (_shouldPinned == true && offsetY <= 100) {
+
+      print('下面的:${offsetY}');
       setState(() {
         _shouldPinned = false;
       });
-    } else if (_shouldPinned == false && offsetY > 147) {
+      print(_shouldPinned);
+    }
+    else
+    if (_shouldPinned == false && offsetY > 100) {
+      print('上边的:${offsetY}');
+      print(offsetY);
       setState(() {
         _shouldPinned = true;
       });
+      print(_shouldPinned);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: Text('商品详情'),),
+      appBar: AppBar(title: Text('商品详情'),),
       body: CustomScrollView(
         controller: controller,
         slivers: [
@@ -84,7 +91,7 @@ class _MyAppState extends State<MyApp> {
                 child: const Center(child: Text('相关商品列表'),),
               ),
               !_shouldPinned
-                  ? _getHeadRow()
+                  ? _getHeadRow1()
                   : Container(),
               Container(
                 key: _key,
@@ -127,7 +134,23 @@ class _Header extends SliverPersistentHeaderDelegate {
 Widget _getHeadRow() {
   return Container(
     height: 44,
-    color: const Color.fromRGBO(250, 250, 250, 1),
+    color: const Color.fromRGBO(250, 250, 250, 0.1),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      children: const [
+        Text(
+          '相关商品',
+          style: TextStyle(color: Color.fromRGBO(51, 51, 51, 1), fontSize: 18),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _getHeadRow1() {
+  return Container(
+    height: 44,
+    color: const Color.fromRGBO(218, 28, 28, 0.5),
     child: Row(
       mainAxisSize: MainAxisSize.max,
       children: const [
