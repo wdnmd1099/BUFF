@@ -37,65 +37,7 @@ class _FirstPageState extends State<FirstPage> {
             ),
             SliverPersistentHeader(
               pinned: true,
-              delegate: _CustomHeaderDelegate(
-                minHeight: 40.0,
-                maxHeight: 50.0,
-                child: Container(
-                  color: Color.fromRGBO(250, 250, 250, 1),
-                  child: Center(
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      child: Container(
-                        color: Color.fromRGBO(250, 250, 250, 1),
-                        // height: 40,
-                        width: maxWidth,
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () => {
-
-                              },
-                              child: Text(
-                                '最新上架',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(top: 2),
-                              child: Icon(Icons.arrow_right),
-                            ),
-                            Expanded(
-                              child: Container(
-                                alignment: Alignment.centerRight,
-                                padding: EdgeInsets.only(right: 8),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  width: 60,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    // color: Colors.orange,
-                                    borderRadius: BorderRadius.circular(50),
-                                    border: Border.all(
-                                        color: Color.fromRGBO(196, 196, 196, 1),
-                                        width: 1),
-                                  ),
-                                  child: Text(
-                                    '查看更多',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Color.fromRGBO(196, 196, 196, 1),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ), //吸顶
-                  ),
-                ),
-              ),
+              delegate: _Header(xxx: '最新上架'),
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -129,61 +71,8 @@ class _FirstPageState extends State<FirstPage> {
               ),
             ),
             SliverPersistentHeader(
-              pinned: true,
-              delegate: _CustomHeaderDelegate(
-                minHeight: 40.0,
-                maxHeight: 50.0,
-                child: Container(
-                  color: Color.fromRGBO(250, 250, 250, 1),
-                  child: Center(
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      child: Container(
-                        color: Color.fromRGBO(250, 250, 250, 1),
-                        height: 40,
-                        width: maxWidth,
-                        child: Row(
-                          children: [
-                            Text(
-                              '起飞',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(top: 2),
-                              child: Icon(Icons.arrow_right),
-                            ),
-                            Expanded(
-                              child: Container(
-                                alignment: Alignment.centerRight,
-                                padding: EdgeInsets.only(right: 8),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  width: 60,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    // color: Colors.orange,
-                                    borderRadius: BorderRadius.circular(50),
-                                    border: Border.all(
-                                        color: Color.fromRGBO(196, 196, 196, 1),
-                                        width: 1),
-                                  ),
-                                  child: Text(
-                                    '查看更多',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Color.fromRGBO(196, 196, 196, 1),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ), //吸顶
-                  ),
-                ),
-              ),
+              pinned: true ,
+              delegate: _Header(xxx: '起飞'),
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -252,4 +141,42 @@ class _CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
         minHeight != oldDelegate.minHeight ||
         child != oldDelegate.child;
   }
+}
+
+
+class _Header extends SliverPersistentHeaderDelegate {
+  String xxx ;
+  _Header({required this.xxx});
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return _getHeadRow(xxx);
+  }
+
+  @override
+  double get maxExtent => 50;
+
+  @override
+  double get minExtent => 50;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
+}
+
+Widget _getHeadRow(String x) {
+  return Container(
+    height: 50,
+    color: const Color.fromRGBO(255, 255, 255, 1.0),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(
+          x,
+          style: TextStyle(color: Color.fromRGBO(51, 51, 51, 1), fontSize: 18),
+        ),
+      ],
+    ),
+  );
 }

@@ -1,110 +1,163 @@
 import 'package:flutter/material.dart';
 
-GlobalKey globalKey = GlobalKey();
-
-void main() => runApp(
-  MaterialApp(
-    home: MyApp(),
-  ),
-);
-
-class MyApp extends StatefulWidget {
-  MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
+void main() {
+  runApp(MyApp());
 }
 
-class _MyAppState extends State<MyApp> {
-  final ScrollController controller = ScrollController();
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyHomePage(),
+    );
+  }
+}
 
-  bool _shouldPinned = true;
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
 
-  GlobalKey _key = GlobalKey();
-  double dy = 500;
+class _MyHomePageState extends State<MyHomePage> {
+  ScrollController _controller = ScrollController();
+  bool _headersTouched = true;
 
   @override
   void initState() {
     super.initState();
-
-    controller.addListener(() {
-      checkNeedPinned();
-    });
+    _controller.addListener(_handleScroll);
   }
 
-  void checkNeedPinned() {
-    BuildContext currentContext;
-    if (_key.currentContext == null) {
-      return;
-    } else {
-      currentContext = _key.currentContext!;
-    }
-    RenderBox renderBox = currentContext.findRenderObject() as RenderBox;
-    // offset.dx , offset.dy 就是控件的左上角坐标
-    var offset = renderBox.localToGlobal(Offset.zero);
-    double offsetY = offset.dy;
-    if (_shouldPinned == true && offsetY <= 100) {
+  @override
+  void dispose() {
+    _controller.removeListener(_handleScroll);
+    _controller.dispose();
+    super.dispose();
+  }
 
-      print('下面的:${offsetY}');
+  void _handleScroll() {
+    // print('屏幕高度:${_controller.position.viewportDimension}');
+    // print('最大可滚动距离:${_controller.position.maxScrollExtent}');
+    // print('当前屏幕滑动距离:${_controller.offset}');
+
+    // print(_headersTouched);
+    // print(_controller.position.maxScrollExtent - _controller.position.viewportDimension);
+
+    if(_controller.offset > (_controller.position.viewportDimension * 2 + 0)
+    || _controller.offset < (_controller.position.viewportDimension * 2+ 0)){
       setState(() {
-        _shouldPinned = false;
-      });
-      print(_shouldPinned);
+            _headersTouched = true;
+          });
     }
-    else
-    if (_shouldPinned == false && offsetY > 100) {
-      print('上边的:${offsetY}');
-      print(offsetY);
+
+    if(_controller.offset > _controller.position.viewportDimension * 2+ 0){
       setState(() {
-        _shouldPinned = true;
+        _headersTouched = false  ;
       });
-      print(_shouldPinned);
     }
+
+
+    // if (_controller.offset >=
+    //     (_controller.position.maxScrollExtent - _controller.position.viewportDimension)) {
+    //   setState(() {
+    //     _headersTouched = true;
+    //   });
+    // } else {
+    //   setState(() {
+    //     _headersTouched = false;
+    //   });
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
+    double maxHeight = MediaQuery.of(context).size.height;
+    double maxWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(title: Text('商品详情'),),
       body: CustomScrollView(
-        controller: controller,
+        controller: _controller,
         slivers: [
-          SliverToBoxAdapter(
-              child: Container(
-                color: Colors.redAccent,
-                height: 470,
-                child: const Center(
-                  child: Text('基本信息'),
-                ),
-              )),
-          _shouldPinned
-              ? SliverPersistentHeader(
-            delegate: _Header(),
-            pinned: _shouldPinned,
-          )
-              : SliverToBoxAdapter(child: Container()),
           SliverList(
-            delegate: SliverChildListDelegate([
-              Container(
-                color: Colors.blue,
-                height: 500,
-                child: const Center(child: Text('相关商品列表'),),
+            delegate: SliverChildBuilderDelegate(
+                  (context, index)=>
+                    Container(
+                      height: maxHeight*0.1,
+                      child: ListTile(
+                        title: Text('Item $index'),
+                      ),
+                    ),
+
+              childCount: 10,
+            ),
+          ),
+          SliverPersistentHeader(
+            pinned: _headersTouched,
+            delegate: _SliverAppBarDelegate(
+              minHeight: 60,
+              maxHeight: 60,
+              child: Container(
+                color: _headersTouched ? Color.fromRGBO(158,158,77,0.5) : Color.fromRGBO(77, 77, 77, 0.5),
+                child: Center(
+                  child: Text(
+                    _headersTouched?'起飞':'尚未起飞',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
               ),
-              !_shouldPinned
-                  ? _getHeadRow1()
-                  : Container(),
-              Container(
-                key: _key,
-                color: Colors.teal,
-                height: 500,
-                child: const Center(child: Text('商品更多信息'),),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) => Container(
+                    height: maxHeight*0.1,
+                    child: ListTile(
+                      title: Text('Item $index'),
+                    ),
+                  ),
+              childCount: 10,
+            ),
+          ),
+
+          // _headersTouched?SliverPadding(padding: EdgeInsets.all(0)):SliverPersistentHeader(
+          //   pinned: false,
+          //   delegate: _SliverAppBarDelegate(
+          //     minHeight: 60,
+          //     maxHeight: 60,
+          //     child: Container(
+          //       color: _headersTouched ? Color.fromRGBO(77, 77, 77, 0.5) : Color.fromRGBO(77, 77, 77, 0.5),
+          //       child: Center(
+          //         child: Text(
+          //           _headersTouched?'尚未起飞':'起飞',
+          //           style: TextStyle(color: Colors.white, fontSize: 24),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _SliverAppBarDelegate(
+              minHeight: 60,
+              maxHeight: 60,
+              child: Container(
+                color: _headersTouched ? Color.fromRGBO(158,158,77,0.5) : Color.fromRGBO(77, 77, 77, 0.5),
+                child: Center(
+                  child: Text(
+                    'Header 1',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
               ),
-              Container(
-                color: Colors.orange,
-                height: 500,
-                child: const Center(child: Text('评论列表'),),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) => ListTile(
+                title: Text('Item $index'),
               ),
-            ]),
+              childCount: 30,
+            ),
           ),
         ],
       ),
@@ -112,53 +165,33 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class _Header extends SliverPersistentHeaderDelegate {
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  _SliverAppBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return _getHeadRow();
+    return SizedBox.expand(child: child);
   }
 
   @override
-  double get maxExtent => 44;
-
-  @override
-  double get minExtent => 44;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
-}
-
-Widget _getHeadRow() {
-  return Container(
-    height: 44,
-    color: const Color.fromRGBO(250, 250, 250, 0.1),
-    child: Row(
-      mainAxisSize: MainAxisSize.max,
-      children: const [
-        Text(
-          '相关商品',
-          style: TextStyle(color: Color.fromRGBO(51, 51, 51, 1), fontSize: 18),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _getHeadRow1() {
-  return Container(
-    height: 44,
-    color: const Color.fromRGBO(218, 28, 28, 0.5),
-    child: Row(
-      mainAxisSize: MainAxisSize.max,
-      children: const [
-        Text(
-          '相关商品',
-          style: TextStyle(color: Color.fromRGBO(51, 51, 51, 1), fontSize: 18),
-        ),
-      ],
-    ),
-  );
 }
