@@ -14,10 +14,14 @@ class _FirstPageState extends State<FirstPage> {
   String currentTitle = '最新上架';
   final ScrollController _scrollController = ScrollController();
 
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(() {_handleScroll1();});
+
+
+
   }
 
 
@@ -47,14 +51,13 @@ class _FirstPageState extends State<FirstPage> {
           currentTitle = title[2];
         });
       }
-
   }
+
 
   @override
   Widget build(BuildContext context) {
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
-    Widget con = cont(context);
 
     return  CustomScrollView(
       controller: _scrollController,
@@ -62,7 +65,7 @@ class _FirstPageState extends State<FirstPage> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  return con;
+                  return const FirstPageHeader();
                 },
                 childCount: 1,
               ),
