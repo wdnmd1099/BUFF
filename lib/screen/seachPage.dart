@@ -16,6 +16,11 @@ class _State extends State<SeachPage> {
   //下面这些都是具体类目用于存放已选择的item，给显示变色用的
   List<String> knifeIndex = [];
   List<String> gloveIndex = [];
+  List<String> pistolIndex = [];
+  List<String> submachineGunIndex = [];
+  List<String> shotgunIndex = [];
+
+
 
   //总共已选择的选项
   List<String> selected = [];
@@ -305,93 +310,203 @@ class _State extends State<SeachPage> {
                                           childCount: 1,
                                         ),
                                       ), //手套选择内容
-
-                                      SliverPadding(padding: EdgeInsets.all(60)),
                                       SliverList(
                                         delegate: SliverChildBuilderDelegate(
                                               (BuildContext context, int index) {
                                             return Container(
-                                              padding: const EdgeInsets.all(12),
-                                              child: Container(
-                                                height: maxHeight,
-                                                child: GridView.builder(
-                                                  itemCount: knife.length,  //要遍历的数组的长度
-                                                  physics: NeverScrollableScrollPhysics(),
-
-                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    mainAxisExtent: 50, //元素的高
-                                                    crossAxisCount: 2, // 每一行的子项数量
-                                                    mainAxisSpacing: 10, //间距
-                                                    crossAxisSpacing: 10, //间距
-                                                  ),
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    var item = knife[index]; //定义每一个遍历的元素
-                                                    return Container(
+                                              // color: Colors.red,
+                                              padding: EdgeInsets.all(12),
+                                              child: const Text('手枪',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
+                                            );
+                                          },
+                                          childCount: 1,
+                                        ),
+                                      ), // 手枪标题
+                                      SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                              (BuildContext context, int index) {
+                                            return Container(
+                                              padding: EdgeInsets.only(left: 12,right: 12),
+                                              child: GridView.builder(
+                                                itemCount: pistol.length,  //list
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                                  mainAxisExtent: 35,
+                                                  // childAspectRatio:1.2,
+                                                  crossAxisCount: 2,
+                                                  mainAxisSpacing: 10,
+                                                  crossAxisSpacing: 10,
+                                                ),
+                                                itemBuilder: (BuildContext context, int index) {
+                                                  // print(maxHeight);
+                                                  var item = pistol[index];  //list
+                                                  return GestureDetector(
+                                                    onTap: (){
+                                                      setState(() {
+                                                        pistolIndex = test(item, pistolIndex, '手枪');
+                                                        checkUnselect();
+                                                        print(pistolIndex);
+                                                        print(selected);
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      alignment: Alignment.center,
                                                       decoration: BoxDecoration(
-                                                        // borderRadius: BorderRadius.circular(4),
-                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(2),
+                                                        color: pistolIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
                                                         border: Border.all(
-                                                          color: Colors.grey,
+                                                          color: pistolIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
                                                           width: 0.5,
                                                         ),
                                                       ),
-                                                      child: Center(
-                                                        child: Text(
-                                                          '${item}',
-                                                          style: const TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  // 子项的总数量
-                                                ),
+                                                      child: Text('${item}',style: TextStyle(fontSize: 12,color: pistolIndex.contains(item)? Colors.white:Colors.grey),),
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             );
+
                                           },
-                                          childCount: 1, // 设置子项数量
+                                          childCount: 1,
                                         ),
-                                      ),
+                                      ), //手枪选择内容
+
+
+
                                       SliverList(
                                         delegate: SliverChildBuilderDelegate(
                                               (BuildContext context, int index) {
                                             return Container(
+                                              // color: Colors.red,
                                               padding: EdgeInsets.all(12),
-                                              child: Container(
-                                                height: maxHeight,
-                                                child: GridView.builder(
-                                                  itemCount: knife.length,
-                                                  physics: NeverScrollableScrollPhysics(),
-
-                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2, // 每一行的子项数量
-                                                  ),
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    var item = knife[index];
-                                                    return Container(
-                                                      color: Colors.blue,
-                                                      child: Center(
-                                                        child: Text(
-                                                          '${item}',
-                                                          style: const TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 20,
-                                                          ),
+                                              child: const Text('微型冲锋枪',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
+                                            );
+                                          },
+                                          childCount: 1,
+                                        ),
+                                      ), // 冲锋枪标题
+                                      SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                              (BuildContext context, int index) {
+                                            return Container(
+                                              padding: EdgeInsets.only(left: 12,right: 12),
+                                              child: GridView.builder(
+                                                itemCount: submachineGun.length,  //list
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                                  mainAxisExtent: 35,
+                                                  // childAspectRatio:1.2,
+                                                  crossAxisCount: 2,
+                                                  mainAxisSpacing: 10,
+                                                  crossAxisSpacing: 10,
+                                                ),
+                                                itemBuilder: (BuildContext context, int index) {
+                                                  // print(maxHeight);
+                                                  var item = submachineGun[index];  //list
+                                                  return GestureDetector(
+                                                    onTap: (){
+                                                      setState(() {
+                                                        submachineGunIndex = test(item, submachineGunIndex, '冲锋枪');
+                                                        checkUnselect();
+                                                        print(submachineGunIndex);
+                                                        print(selected);
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      alignment: Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(2),
+                                                        color: submachineGunIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                                        border: Border.all(
+                                                          color: submachineGunIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                                          width: 0.5,
                                                         ),
                                                       ),
-                                                    );
-                                                  },
-                                                  // 子项的总数量
-                                                ),
+                                                      child: Text('${item}',style: TextStyle(fontSize: 12,color: submachineGunIndex.contains(item)? Colors.white:Colors.grey),),
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             );
 
                                           },
-                                          childCount: 1, // 设置子项数量
+                                          childCount: 1,
                                         ),
-                                      ),
+                                      ), //冲锋枪选择内容
+
+                                      SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                              (BuildContext context, int index) {
+                                            return Container(
+                                              // color: Colors.red,
+                                              padding: EdgeInsets.all(12),
+                                              child: const Text('霰弹枪',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
+                                            );
+                                          },
+                                          childCount: 1,
+                                        ),
+                                      ), // 霰弹枪标题
+                                      SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                              (BuildContext context, int index) {
+                                            return Container(
+                                              padding: EdgeInsets.only(left: 12,right: 12),
+                                              child: GridView.builder(
+                                                itemCount: shotgun.length,  //list
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                                  mainAxisExtent: 35,
+                                                  // childAspectRatio:1.2,
+                                                  crossAxisCount: 2,
+                                                  mainAxisSpacing: 10,
+                                                  crossAxisSpacing: 10,
+                                                ),
+                                                itemBuilder: (BuildContext context, int index) {
+                                                  // print(maxHeight);
+                                                  var item = shotgun[index];  //list
+                                                  return GestureDetector(
+                                                    onTap: (){
+                                                      setState(() {
+                                                        shotgunIndex = test(item, shotgunIndex, '霰弹枪');
+                                                        checkUnselect();
+                                                        print(shotgunIndex);
+                                                        print(selected);
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      alignment: Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(2),
+                                                        color: shotgunIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                                        border: Border.all(
+                                                          color: shotgunIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                                          width: 0.5,
+                                                        ),
+                                                      ),
+                                                      child: Text('${item}',style: TextStyle(fontSize: 12,color: shotgunIndex.contains(item)? Colors.white:Colors.grey),),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            );
+
+                                          },
+                                          childCount: 1,
+                                        ),
+                                      ), //霰弹枪选择内容
+
+
+
+
+
+
+
                                     ],
                                   ),),  //可滚动选择选项区域
                               ],
