@@ -10,11 +10,92 @@ class SeachPage extends StatefulWidget {
 }
 
 class _State extends State<SeachPage> {
-  int currentIndex = 0;
-  List<int> knifeIndex = [];
-  List<int> gloveIndex = [];
+  int currentIndex = 0;      //indexStack的index
+  bool allUnselect = true; //总类目的不限按钮触发
 
+  //下面这些都是具体类目用于存放已选择的item，给显示变色用的
+  List<String> knifeIndex = [];
+  List<String> gloveIndex = [];
+
+  //总共已选择的选项
   List<String> selected = [];
+
+  List<String> test(String item,List<String> middleList,String title){
+    // 检查当前点击元素是否已经存在于数组
+    bool isItemInArray = middleList.contains(item);
+
+    if(item == '不限'){
+      // 如果点击的是不限，就把该类目的所有已选择元素从selected中删除
+      for(int i=0;i<middleList.length;i++){
+        for(int x=0;x<selected.length;x++){
+          if(middleList[i] == selected[x]){
+            selected.remove(selected[x]);
+          }
+        }
+      }
+
+
+      List allNone = [];
+      // 如果
+      for(int x=0;x<selected.length;x++) {
+        if(selected[x] == title){
+
+        }else if(selected[x] != title){
+          allNone.add(false);
+        }
+      }
+
+      if(allNone.length == selected.length){
+        selected.add(title);
+      }
+      middleList = ['不限'];
+    }
+
+
+    //若已存在，删除
+    if(isItemInArray){
+      middleList.remove(item);
+      selected.remove(item);
+      //如果再次点击的是不限，那么就要把selected的title也删除
+      if(item == '不限'){
+        selected.remove(title);
+      }
+    }
+    //若不存在
+    else if(selected.length < 5){
+      if(item != '不限'){
+        //如果点击的元素不是不限，就检查元素里有没有不限，有就删除
+        for(int i=0;i<middleList.length;i++){
+          if(middleList[i] == '不限'){
+            middleList.remove(middleList[i]);
+          }
+        }
+        //如果里面有该总类目，就删除该总类目，以防止点击不限后再点其它非不限元素时，该类目依然存在于selected
+        for(int i=0;i<selected.length;i++){
+          if(selected[i] == title){
+            selected.remove(selected[i]);
+          }
+        }
+        //然后添加点击的元素
+        middleList.add(item);
+        selected.add(item);
+      }
+
+
+    }else if(selected.length == 5){
+      BotToast.showText(text:"最多只能选择五项",textStyle: TextStyle(fontSize: 12,color: Colors.white));
+    }
+
+    return middleList;
+  }
+
+  void checkUnselect(){
+    if(selected.isEmpty){
+      allUnselect = true;
+    }else{
+      allUnselect = false;
+    }
+  }
 
 
 
@@ -72,19 +153,24 @@ class _State extends State<SeachPage> {
                                                 // color: Colors.orange,
                                                 child: Row(
                                                   children: [
-                                                    Container(
-                                                      height: 35,
-                                                      width:  maxWidth * 0.4 - 17 ,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(2),
-                                                        color: Colors.transparent,
-                                                        border: Border.all(
-                                                          color: Colors.grey,
-                                                          width: 0.5,
+                                                    GestureDetector(
+                                                      onTap:(){
+
+                                                      },
+                                                      child:  Container(
+                                                        height: 35,
+                                                        width:  maxWidth * 0.4 - 17 ,
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(2),
+                                                          color: allUnselect? const Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                                          border: Border.all(
+                                                            color: allUnselect? const Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                                            width: 0.5,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      child: const Center(
-                                                        child: Text('不限',style: TextStyle(fontSize: 12,color:Colors.grey),),
+                                                        child: Center(
+                                                          child: Text('不限',style: TextStyle(fontSize: 12, color: allUnselect ? Colors.white:Colors.grey, ),),
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
@@ -130,33 +216,9 @@ class _State extends State<SeachPage> {
                                                   return GestureDetector(
                                                     onTap: (){
                                                       setState(() {
-                                                        //少于5个添加，等于或多于就提示
-                                                        //三元运算就在外面写一个返回bool的函数给它调用就行了
-                                                        bool isNumberInArray = knifeIndex.contains(index);
-                                                        //点击的选项如果存在于列表证明是已经点击过的，就删除它
-                                                        if(isNumberInArray){
-                                                          knifeIndex.remove(index);
-                                                          selected.remove(item);
-                                                        }
-                                                        //如果不存在并且列表数少于5个，就加入它
-                                                        else if(selected.length < 5){
-                                                          knifeIndex.add(index);
-                                                          selected.add(item);
-                                                        }else if(knifeIndex.length == 5){
-                                                          BotToast.showText(text:"最多只能选择五项",textStyle: TextStyle(fontSize: 12,color: Colors.white));
-                                                        }
-                                                        //首次默认是不限，如果点击其它需要先把不限删除
-                                                        if(knifeIndex.length > 0){
-                                                          knifeIndex.remove(0);
-                                                          selected.remove(knife[0]);
-                                                        }
-                                                        //如果点击的是不限，那么要删除其它已选的选项
-                                                        if(index == 0){
-                                                          knifeIndex = [0];
-                                                          selected = ['不限'];
-                                                        }
-
-                                                        // print(knifeIndex);
+                                                       knifeIndex = test(item, knifeIndex, '匕首');
+                                                       checkUnselect();
+                                                        print(knifeIndex);
                                                         print(selected);
                                                       });
                                                     },
@@ -164,13 +226,13 @@ class _State extends State<SeachPage> {
                                                       alignment: Alignment.center,
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(2),
-                                                        color: knifeIndex.contains(index)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                                        color: knifeIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
                                                         border: Border.all(
-                                                          color: knifeIndex.contains(index)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                                          color: knifeIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
                                                           width: 0.5,
                                                         ),
                                                       ),
-                                                      child: Text('${item}',style: TextStyle(fontSize: 12,color: knifeIndex.contains(index)? Colors.white:Colors.grey),),
+                                                      child: Text('${item}',style: TextStyle(fontSize: 12,color: knifeIndex.contains(item)? Colors.white:Colors.grey),),
                                                     ),
                                                   );
                                                 },
@@ -192,7 +254,7 @@ class _State extends State<SeachPage> {
                                           },
                                           childCount: 1,
                                         ),
-                                      ), //手套标题
+                                      ), // 手套标题
                                       SliverList(
                                         delegate: SliverChildBuilderDelegate(
                                               (BuildContext context, int index) {
@@ -216,33 +278,9 @@ class _State extends State<SeachPage> {
                                                   return GestureDetector(
                                                     onTap: (){
                                                       setState(() {
-                                                        //少于5个添加，等于或多于就提示
-                                                        //三元运算就在外面写一个返回bool的函数给它调用就行了
-                                                        bool isNumberInArray = gloveIndex.contains(index);
-                                                        //点击的选项如果存在于列表证明是已经点击过的，就删除它
-                                                        if(isNumberInArray){
-                                                          gloveIndex.remove(index);
-                                                          selected.remove(item);
-                                                        }
-                                                        //如果不存在并且列表数少于5个，就加入它
-                                                        else if(gloveIndex.length < 5){
-                                                          gloveIndex.add(index);
-                                                          selected.add(item);
-                                                        }else if(gloveIndex.length == 5){
-                                                          BotToast.showText(text:"最多只能选择五项",textStyle: TextStyle(fontSize: 12,color: Colors.white));
-                                                        }
-                                                        //首次默认是不限，如果点击其它需要先把不限删除
-                                                        if(gloveIndex.length > 0){
-                                                          gloveIndex.remove(0);
-                                                          selected.remove(knife[0]);
-                                                        }
-                                                        //如果点击的是不限，那么要删除其它已选的选项
-                                                        if(index == 0){
-                                                          gloveIndex = [0];
-                                                          selected = ['不限'];
-                                                        }
-
-                                                        // print(knifeIndex);
+                                                        gloveIndex = test(item, gloveIndex, '手套');
+                                                        checkUnselect();
+                                                        print(gloveIndex);
                                                         print(selected);
                                                       });
                                                     },
@@ -250,13 +288,13 @@ class _State extends State<SeachPage> {
                                                       alignment: Alignment.center,
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(2),
-                                                        color: knifeIndex.contains(index)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                                        color: gloveIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
                                                         border: Border.all(
-                                                          color: knifeIndex.contains(index)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                                          color: gloveIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
                                                           width: 0.5,
                                                         ),
                                                       ),
-                                                      child: Text('${item}',style: TextStyle(fontSize: 12,color: knifeIndex.contains(index)? Colors.white:Colors.grey),),
+                                                      child: Text('${item}',style: TextStyle(fontSize: 12,color: gloveIndex.contains(item)? Colors.white:Colors.grey),),
                                                     ),
                                                   );
                                                 },
@@ -267,7 +305,6 @@ class _State extends State<SeachPage> {
                                           childCount: 1,
                                         ),
                                       ), //手套选择内容
-
 
                                       SliverPadding(padding: EdgeInsets.all(60)),
                                       SliverList(
