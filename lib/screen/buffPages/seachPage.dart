@@ -88,12 +88,7 @@ class _State extends State<SeachPage> {
 
 
     }else if(selected.length == 5){
-      if(selected[selected.length-1] == title){
-
-      }else{
-        BotToast.showText(text:"最多只能选择五项",textStyle: TextStyle(fontSize: 12,color: Colors.white));
-      }
-
+      BotToast.showText(text:"最多只能选择五项",textStyle: TextStyle(fontSize: 12,color: Colors.white));
     }
 
     return middleList;
