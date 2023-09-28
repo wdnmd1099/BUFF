@@ -190,7 +190,7 @@ class _State extends State<SeachPage> {
                                         delegate: SliverChildBuilderDelegate(
                                               (BuildContext context, int index) {
                                             return Container(
-                                              // color: Colors.red,
+                                              // color: Colors.pink,
                                               padding: EdgeInsets.all(12),
                                               child: const Text('匕首',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
                                             );
@@ -198,19 +198,26 @@ class _State extends State<SeachPage> {
                                           childCount: 1,
                                         ),
                                       ), //匕首标题
+
+
+
+
                                       SliverList(
                                         delegate: SliverChildBuilderDelegate(
                                               (BuildContext context, int index) {
                                             return Container(
-                                              padding: EdgeInsets.only(left: 12,right: 12),
+                                              // color: Colors.red,
+                                              // alignment: Alignment.topCenter,
+                                              padding: const EdgeInsets.only(left: 12,right: 12),
                                               child: GridView.builder(
+                                                padding: EdgeInsets.all(0),
                                                 itemCount: knife.length,
                                                 shrinkWrap: true,
                                                 physics: const NeverScrollableScrollPhysics(),
                                                 gridDelegate:
                                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                                                  mainAxisExtent: 35,
-                                                  // childAspectRatio:1.2,
+                                                  // mainAxisExtent: 35,
+                                                  childAspectRatio:4,
                                                   crossAxisCount: 2,
                                                   mainAxisSpacing: 10,
                                                   crossAxisSpacing: 10,
@@ -243,7 +250,6 @@ class _State extends State<SeachPage> {
                                                 },
                                               ),
                                             );
-
                                           },
                                           childCount: 1,
                                         ),
@@ -266,6 +272,7 @@ class _State extends State<SeachPage> {
                                             return Container(
                                               padding: EdgeInsets.only(left: 12,right: 12),
                                               child: GridView.builder(
+                                                padding: EdgeInsets.all(0),
                                                 itemCount: glove.length,
                                                 shrinkWrap: true,
                                                 physics: const NeverScrollableScrollPhysics(),
@@ -326,8 +333,9 @@ class _State extends State<SeachPage> {
                                         delegate: SliverChildBuilderDelegate(
                                               (BuildContext context, int index) {
                                             return Container(
-                                              padding: EdgeInsets.only(left: 12,right: 12),
+                                              padding: const EdgeInsets.only(left: 12,right: 12),
                                               child: GridView.builder(
+                                                padding: const EdgeInsets.all(0),
                                                 itemCount: pistol.length,  //list
                                                 shrinkWrap: true,
                                                 physics: const NeverScrollableScrollPhysics(),
@@ -393,6 +401,7 @@ class _State extends State<SeachPage> {
                                             return Container(
                                               padding: EdgeInsets.only(left: 12,right: 12),
                                               child: GridView.builder(
+                                                padding: EdgeInsets.all(0),
                                                 itemCount: submachineGun.length,  //list
                                                 shrinkWrap: true,
                                                 physics: const NeverScrollableScrollPhysics(),
@@ -454,8 +463,9 @@ class _State extends State<SeachPage> {
                                         delegate: SliverChildBuilderDelegate(
                                               (BuildContext context, int index) {
                                             return Container(
-                                              padding: EdgeInsets.only(left: 12,right: 12),
+                                              padding: const EdgeInsets.only(left: 12,right: 12),
                                               child: GridView.builder(
+                                                padding: const EdgeInsets.all(0),
                                                 itemCount: shotgun.length,  //list
                                                 shrinkWrap: true,
                                                 physics: const NeverScrollableScrollPhysics(),
