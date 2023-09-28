@@ -1,6 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import '../临时数据/测试.dart';
+import '../../临时数据/测试.dart';
 
 class SeachPage extends StatefulWidget {
   const SeachPage({super.key});
@@ -88,7 +88,12 @@ class _State extends State<SeachPage> {
 
 
     }else if(selected.length == 5){
-      BotToast.showText(text:"最多只能选择五项",textStyle: TextStyle(fontSize: 12,color: Colors.white));
+      if(selected[selected.length-1] == title){
+
+      }else{
+        BotToast.showText(text:"最多只能选择五项",textStyle: TextStyle(fontSize: 12,color: Colors.white));
+      }
+
     }
 
     return middleList;

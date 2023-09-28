@@ -1,4 +1,4 @@
-import 'package:coffee/screen/firstPage.dart';
+import 'package:coffee/screen/buffPages/firstPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

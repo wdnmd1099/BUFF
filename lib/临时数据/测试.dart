@@ -1,4 +1,4 @@
-import 'package:coffee/screen/seachPage.dart';
+import 'package:coffee/screen/buffPages/seachPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
