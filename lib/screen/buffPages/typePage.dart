@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
 import '../../stateManage/stateManage.dart';
 import '../../临时数据/测试.dart';
 
@@ -25,8 +26,11 @@ class _State extends State<TypePage> {
 
 
 
+
+
   //总共已选择的选项
   List<String> selected = [];
+
 
   List<String> selectOption(String item,List<String> middleList,String title,TitleList titleList){
 
@@ -122,7 +126,7 @@ class _State extends State<TypePage> {
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
     final titleList = Provider.of<TitleList>(context);
-
+    // cont = context;
     return  Container(
       height: maxHeight,
       width: maxWidth,

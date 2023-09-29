@@ -4,12 +4,18 @@ import 'package:provider/provider.dart';
 import 'bottomNavigationBar/bottomNavigationBar.dart';
 import 'stateManage/stateManage.dart';
 
+
+var globalContext ; //把MyApp的context暴露出去，给class里调用的Provider使用，比如在seachPage.dart里的使用。
+
+
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        // ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
         ChangeNotifierProvider<TitleList>(create: (_) => TitleList()),
+        // ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        // ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        // ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
       ],
       child: MyApp(),
     ),
@@ -19,6 +25,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    globalContext = context;
     return MaterialApp(
       builder: BotToastInit(),  //toast配置
       navigatorObservers: [BotToastNavigatorObserver()],  //toast配置

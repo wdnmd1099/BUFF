@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:coffee/screen/buffPages/popularSkin.dart';
 import 'package:coffee/screen/buffPages/typePage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../main.dart';
 import '../../stateManage/stateManage.dart';
 import '../../临时数据/测试.dart';
 
@@ -15,6 +17,17 @@ class SeachPage extends StatefulWidget {
 
 class _State extends State<SeachPage> {
   int currentIndex = 0;      //indexStack的index
+
+  @override
+  void dispose () {
+    super.dispose();
+    //页面销毁时清空选择的数据
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TitleList>(globalContext,listen:false).reset();
+      print('已销毁');
+    });
+  }
+
 
 
   @override
@@ -45,11 +58,9 @@ class _State extends State<SeachPage> {
                          TypePage(), //类型页面
 
 
-                          Container(
-                            height: maxHeight,
-                            width: maxWidth,
-                            color: Colors.red,
-                          ),
+                         PopularSkin(),//热门皮肤
+
+
                           Container(
                             height: maxHeight,
                             width: maxWidth,
@@ -148,15 +159,6 @@ class _State extends State<SeachPage> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                   ),
-                                  // Text(
-                                  //   '${columNavigation[i]}',
-                                  //   maxLines: 3,
-                                  //   style: const TextStyle(
-                                  //     fontSize: 12,
-                                  //     color: Colors.orange,
-                                  //     overflow: TextOverflow.ellipsis,
-                                  //   ),
-                                  // ),
                                 ),
                               ),
                             ),
@@ -193,7 +195,10 @@ class _State extends State<SeachPage> {
                       height: maxHeight * 0.09 ,
                       padding: const EdgeInsets.only(top: 12,left: 12,right: 6,bottom: 12),
                       child: GestureDetector(
-                          onTap: (){print('重置');},
+                          onTap: (){
+                            //重置是直接跳页面的，跳完即使再调用本地的数据也重置了。
+                            titleList.reset();
+                          },
                           child: Container(
                             color: const Color.fromRGBO(69, 83, 108, 1),
                             child: const Center(
@@ -208,6 +213,15 @@ class _State extends State<SeachPage> {
                       padding: const EdgeInsets.only(top: 12,left: 6,right: 12,bottom: 12),
                       child: GestureDetector(
                         onTap: (){
+                          List selectedOption = titleList.isChangeOrNot;
+                          List mid = [];
+                          for(int i =0;i<selectedOption.length;i++){
+                            if(selectedOption[i] == true){
+                              mid.add(titleList.getColumNavigation[i]);
+                            }
+                          }
+                          titleList.reset();
+                          print(mid);
                           Navigator.pop(context);
                         },
                         child: Container(
