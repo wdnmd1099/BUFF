@@ -1,6 +1,9 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:coffee/screen/buffPages/typePage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../stateManage/stateManage.dart';
 import '../../临时数据/测试.dart';
 
 class SeachPage extends StatefulWidget {
@@ -14,14 +17,13 @@ class _State extends State<SeachPage> {
   int currentIndex = 0;      //indexStack的index
 
 
-
-
-
   @override
   Widget build(BuildContext context) {
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
-
+    final titleList = Provider.of<TitleList>(context);
+    List isChangeOrNot  = titleList.getIsChangeOrNot;
+    List columNavigation = titleList.getColumNavigation;
 
     return Material(
       child: Container(
@@ -61,7 +63,7 @@ class _State extends State<SeachPage> {
                           Container(
                             height: maxHeight,
                             width: maxWidth,
-                            color: Colors.orange,
+                            color: Colors.blue,
                           ),
                           Container(
                             height: maxHeight,
@@ -98,7 +100,7 @@ class _State extends State<SeachPage> {
                     child: ListView(
                       scrollDirection: Axis.vertical,
                       children: [
-                        for(int i=0;i<columNavigation.length;i++)
+                        for(int i=0;i<isChangeOrNot.length;i++)
                           GestureDetector(
                             onTap: (){
                               setState(() {
@@ -106,12 +108,10 @@ class _State extends State<SeachPage> {
                               });
                             },
                             child:Container(
-                              // padding: EdgeInsets.only( top: 5),
-
                               child:  Container(
                                 height: (maxHeight * 0.9) / 9.2,
                                 width: maxWidth * 0.2,
-                                // color: Colors.orange,
+                                padding: EdgeInsets.only(left: 8,right: 8),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   border: Border(
@@ -130,12 +130,33 @@ class _State extends State<SeachPage> {
                                   ),
                                 ),
                                 child: Center(
-                                  child:Text(
+                                  child:isChangeOrNot[i] == false?
+                                  Text(
                                     '${columNavigation[i]}',
-                                    style: TextStyle(fontSize: 14,
+                                    style: TextStyle(
+                                      fontSize: 14,
                                       color: currentIndex == i? Colors.black : const Color.fromRGBO(154, 154, 154, 1),
                                     ),
+                                  ):
+                                  AutoSizeText(
+                                    '${columNavigation[i]}',
+                                      maxLines: 3,
+                                      minFontSize: 12,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.orange,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                   ),
+                                  // Text(
+                                  //   '${columNavigation[i]}',
+                                  //   maxLines: 3,
+                                  //   style: const TextStyle(
+                                  //     fontSize: 12,
+                                  //     color: Colors.orange,
+                                  //     overflow: TextOverflow.ellipsis,
+                                  //   ),
+                                  // ),
                                 ),
                               ),
                             ),
@@ -186,8 +207,8 @@ class _State extends State<SeachPage> {
                       height: maxHeight * 0.09,
                       padding: const EdgeInsets.only(top: 12,left: 6,right: 12,bottom: 12),
                       child: GestureDetector(
-                        onTap: () => {
-                          Navigator.pop(context)
+                        onTap: (){
+                          Navigator.pop(context);
                         },
                         child: Container(
                           color: const Color.fromRGBO(71, 115, 200, 1),

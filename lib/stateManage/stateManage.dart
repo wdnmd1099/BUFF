@@ -39,3 +39,25 @@ class MaskDiaLog with ChangeNotifier {
     notifyListeners();
   }
 }
+
+//typePage的右侧导航栏标题的状态管理
+class TitleList with ChangeNotifier {
+  List rawNavigation = ['类型','热门内容','已贴印花','赛事选手','品质','类别','外观','收藏品','颜色','排序','价格区间',];
+  List columNavigation = ['类型','热门内容','已贴印花','赛事选手','品质','类别','外观','收藏品','颜色','排序','价格区间',];
+  List isChangeOrNot = [false,false,false,false,false,false,false,false,false,false,false];
+
+  List get getIsChangeOrNot => isChangeOrNot;
+  List get getColumNavigation => columNavigation;
+
+  setList(int index,String titles){
+    if(titles.isNotEmpty){
+      isChangeOrNot[index] = true;
+      columNavigation[index] = titles;
+      print(columNavigation);
+    }else{
+      isChangeOrNot[index] = false;
+      columNavigation[index] = rawNavigation[index];
+    }
+    notifyListeners();
+  }
+}

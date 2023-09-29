@@ -1,10 +1,12 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../stateManage/stateManage.dart';
 import '../../临时数据/测试.dart';
 
 class TypePage extends StatefulWidget {
-  const TypePage({super.key});
+  TypePage({super.key,});
 
   @override
   State<TypePage> createState() =>
@@ -15,18 +17,19 @@ class _State extends State<TypePage> {
   bool allUnselect = true; //总类目的不限按钮触发
 
   //下面这些都是具体类目用于存放已选择的item，给显示变色用的
-  List<String> knifeIndex = [];
-  List<String> gloveIndex = [];
-  List<String> pistolIndex = [];
-  List<String> submachineGunIndex = [];
-  List<String> shotgunIndex = [];
+  List<String> knifeIndex = [];   //刀
+  List<String> gloveIndex = [];    //手套
+  List<String> pistolIndex = [];  //手枪
+  List<String> submachineGunIndex = [];   //冲锋枪
+  List<String> shotgunIndex = [];   //霰弹枪
 
 
 
   //总共已选择的选项
   List<String> selected = [];
 
-  List<String> test(String item,List<String> middleList,String title){
+  List<String> selectOption(String item,List<String> middleList,String title,TitleList titleList){
+
     // 检查当前点击元素是否已经存在于数组
     bool isItemInArray = middleList.contains(item);
     List allNone = [];
@@ -43,13 +46,12 @@ class _State extends State<TypePage> {
       // 如果title已被添加，就什么都不做，如果没有添加，则要看列表是否全部都没有添加过，全部没有的话标记为没有，在下面处理添加逻辑
       for(int x=0;x<selected.length;x++) {
         if(selected[x] == title){
-
+            //什么都不做
         }else if(selected[x] != title){
           allNone.add(false);
         }
       }
     }
-
 
     //若当前点击元素已存在，删除
     if(isItemInArray){
@@ -98,6 +100,13 @@ class _State extends State<TypePage> {
       }
 
     }
+
+
+    String selectedTitles = selected.join(',');
+    // print(selectedTitles.isEmpty);
+
+    titleList.setList(0, selectedTitles);
+
     return middleList;
   }
 
@@ -112,6 +121,8 @@ class _State extends State<TypePage> {
   Widget build(BuildContext context) {
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
+    final titleList = Provider.of<TitleList>(context);
+
     return  Container(
       height: maxHeight,
       width: maxWidth,
@@ -170,6 +181,7 @@ class _State extends State<TypePage> {
                     childCount: 1, // 设置子项数量
                   ),
                 ), //单独的不限按钮
+
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
@@ -182,8 +194,6 @@ class _State extends State<TypePage> {
                     childCount: 1,
                   ),
                 ), //匕首标题
-
-
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
@@ -210,9 +220,9 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  knifeIndex = test(item, knifeIndex, '匕首');
+                                  knifeIndex = selectOption(item, knifeIndex, '匕首',titleList);
                                   checkUnselect();
-                                  print(knifeIndex);
+                                  // print(knifeIndex);
                                   print(selected);
                                 });
                               },
@@ -236,6 +246,7 @@ class _State extends State<TypePage> {
                     childCount: 1,
                   ),
                 ), //匕首选择内容
+
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
@@ -272,7 +283,7 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  gloveIndex = test(item, gloveIndex, '手套');
+                                  gloveIndex = selectOption(item, gloveIndex, '手套',titleList);
                                   checkUnselect();
                                   print(gloveIndex);
                                   print(selected);
@@ -299,6 +310,7 @@ class _State extends State<TypePage> {
                     childCount: 1,
                   ),
                 ), //手套选择内容
+
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
@@ -335,7 +347,7 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  pistolIndex = test(item, pistolIndex, '手枪');
+                                  pistolIndex = selectOption(item, pistolIndex, '手枪',titleList);
                                   checkUnselect();
                                   print(pistolIndex);
                                   print(selected);
@@ -362,7 +374,6 @@ class _State extends State<TypePage> {
                     childCount: 1,
                   ),
                 ), //手枪选择内容
-
 
 
                 SliverList(
@@ -401,7 +412,7 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  submachineGunIndex = test(item, submachineGunIndex, '冲锋枪');
+                                  submachineGunIndex = selectOption(item, submachineGunIndex, '冲锋枪',titleList);
                                   checkUnselect();
                                   print(submachineGunIndex);
                                   print(selected);
@@ -465,7 +476,7 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  shotgunIndex = test(item, shotgunIndex, '霰弹枪');
+                                  shotgunIndex = selectOption(item, shotgunIndex, '霰弹枪',titleList);
                                   checkUnselect();
                                   print(shotgunIndex);
                                   print(selected);
@@ -492,12 +503,6 @@ class _State extends State<TypePage> {
                     childCount: 1,
                   ),
                 ), //霰弹枪选择内容
-
-
-
-
-
-
 
               ],
             ),),  //可滚动选择选项区域

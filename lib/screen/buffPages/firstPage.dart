@@ -19,9 +19,6 @@ class _FirstPageState extends State<FirstPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(() {_handleScroll1();});
-
-
-
   }
 
 
