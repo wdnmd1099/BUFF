@@ -40,7 +40,7 @@ class _State extends State<TypePage> {
           }
         }
       }
-      // 如果title已被添加，就什么都不做，如果没有添加，则要看列表是否全部都没有添加过，全部没有才添加
+      // 如果title已被添加，就什么都不做，如果没有添加，则要看列表是否全部都没有添加过，全部没有的话标记为没有，在下面处理添加逻辑
       for(int x=0;x<selected.length;x++) {
         if(selected[x] == title){
 
@@ -48,7 +48,6 @@ class _State extends State<TypePage> {
           allNone.add(false);
         }
       }
-      middleList = ['不限'];
     }
 
 
@@ -84,6 +83,7 @@ class _State extends State<TypePage> {
         if(allNone.length == selected.length){
           selected.add(title);
         }
+        middleList = ['不限'];
       }
     }else if(selected.length == 5){
       //如果此时selected的第5个是总类目的话，说明用户需要点击其它选项，放弃不限，所以需要删除不限添加用户点击的选项
