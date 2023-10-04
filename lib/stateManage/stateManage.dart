@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 
 //登录状态管理，用于检测登录状态来拉取取餐页的订单数据
@@ -60,6 +61,10 @@ class TitleList with ChangeNotifier {
     notifyListeners();
   }
 
+  reFresh(){ //给修改引用传递但是不能触发 notifyListeners(); 的操作使用从而手动刷新页面
+    notifyListeners();
+  }
+
   setList(int index,String titles){
     if(titles.isNotEmpty){
       isChangeOrNot[index] = true;
@@ -72,3 +77,54 @@ class TitleList with ChangeNotifier {
     notifyListeners();
   }
 }
+
+
+//选择印花的状态管理
+class PrintFlower with ChangeNotifier {
+  List selectedFlower = [];
+
+  List get getSelectedFlower => selectedFlower;
+
+  void pushFlower(value) {
+    selectedFlower.add(value);
+    notifyListeners();
+  }
+
+  void delFlower(int i){
+    selectedFlower.removeAt(i);
+    notifyListeners();
+  }
+
+  void reset(){
+    selectedFlower = [];
+    notifyListeners();
+  }
+
+  void reFresh() {
+    notifyListeners();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

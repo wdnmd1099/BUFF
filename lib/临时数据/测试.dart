@@ -135,7 +135,7 @@ class _FirstPageHeaderState extends State<FirstPageHeader> {
                               padding:
                               EdgeInsets.only(left: 4, right: 2, top: 2),
                               // color: Colors.purple,
-                              child: Center(
+                              child: const Center(
                                 child: Icon(
                                   Icons.search,
                                   size: 19,
@@ -145,8 +145,8 @@ class _FirstPageHeaderState extends State<FirstPageHeader> {
                             Container(
                               alignment: Alignment.center,
                               // color: Colors.yellow,
-                              padding: EdgeInsets.only(left: 4),
-                              child: Text(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: const Text(
                                 '搜索',
                                 style: TextStyle(
                                     fontSize: 15,
@@ -155,10 +155,10 @@ class _FirstPageHeaderState extends State<FirstPageHeader> {
                             ),
                             Expanded(
                               child: Container(
-                                padding: EdgeInsets.only(right: 8),
+                                padding: const EdgeInsets.only(right: 8),
                                 alignment: Alignment.centerRight,
                                 // color: Colors.green,
-                                child: Icon(Icons.border_outer,
+                                child: const Icon(Icons.border_outer,
                                     size: 32,
                                     color: Color.fromRGBO(162, 162, 162, 1)),
                               ),

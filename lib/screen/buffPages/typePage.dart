@@ -1,13 +1,11 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../main.dart';
 import '../../stateManage/stateManage.dart';
 import '../../临时数据/测试.dart';
+import '../../公共方法/selectOption.dart';
 
 class TypePage extends StatefulWidget {
-  TypePage({super.key,});
+  const TypePage({super.key,});
 
   @override
   State<TypePage> createState() =>
@@ -25,98 +23,28 @@ class _State extends State<TypePage> {
   List<String> shotgunIndex = [];   //霰弹枪
 
 
-
-
-
   //总共已选择的选项
   List<String> selected = [];
 
 
-  List<String> selectOption(String item,List<String> middleList,String title,TitleList titleList){
-
-    // 检查当前点击元素是否已经存在于数组
-    bool isItemInArray = middleList.contains(item);
-    List allNone = [];
-
-    if(item == '不限'){
-      // 如果点击的是不限，就把该类目的所有已选择元素从selected中删除
-      for(int i=0;i<middleList.length;i++){
-        for(int x=0;x<selected.length;x++){
-          if(middleList[i] == selected[x]){
-            selected.remove(selected[x]);
-          }
-        }
-      }
-      // 如果title已被添加，就什么都不做，如果没有添加，则要看列表是否全部都没有添加过，全部没有的话标记为没有，在下面处理添加逻辑
-      for(int x=0;x<selected.length;x++) {
-        if(selected[x] == title){
-            //什么都不做
-        }else if(selected[x] != title){
-          allNone.add(false);
-        }
-      }
-    }
-
-    //若当前点击元素已存在，删除
-    if(isItemInArray){
-      middleList.remove(item);
-      selected.remove(item);
-      //如果再次点击的是不限，那么就要把selected的title也删除
-      if(item == '不限'){
-        selected.remove(title);
-      }
-    }
-    //若当前点击元素不存在
-    else if(selected.length < 5){
-      if(item != '不限'){
-        //如果点击的元素不是不限，就检查元素里有没有不限，有就删除
-        for(int i=0;i<middleList.length;i++){
-          if(middleList[i] == '不限'){
-            middleList.remove(middleList[i]);
-          }
-        }
-        //如果里面有该总类目，就删除该总类目，以防止点击不限后再点其它非不限元素时，该类目依然存在于selected
-        for(int i=0;i<selected.length;i++){
-          if(selected[i] == title){
-            selected.remove(selected[i]);
-          }
-        }
-        //然后添加点击的元素
-        middleList.add(item);
-        selected.add(item);
-      }else if(item == '不限'){
-        //把点击不限后添加总类目的逻辑放到这里，如果放到上面的不限类目，会先添加再判断是否为5个，这样第五个选择不限时会预期外地跳出提示
-        if(allNone.length == selected.length){
-          selected.add(title);
-        }
-        middleList = ['不限'];
-      }
-    }else if(selected.length == 5){
-      //如果此时selected的第5个是总类目的话，说明用户需要点击其它选项，放弃不限，所以需要删除不限添加用户点击的选项
-      //这样可以修复当用户点击不限后，想再选取其它选项时跳提示。
-      if(selected[4] == title){
-        selected.remove(selected[4]);
-        middleList = [];
-        middleList.add(item);
-        selected.add(item);
-      }else{
-        BotToast.showText(text:"最多只能选择五项",textStyle: TextStyle(fontSize: 12,color: Colors.white));
-      }
-
-    }
-
-
-    String selectedTitles = selected.join(',');
-    // print(selectedTitles.isEmpty);
-
-    titleList.setList(0, selectedTitles);
-
-    return middleList;
+  void resetAllList(){ //给总的不限按钮使用，快速清空所有显示的选择选项
+    setState(() {
+      selected = [];
+      knifeIndex = [];
+      gloveIndex = [];
+      pistolIndex = [];
+      submachineGunIndex = [];
+      shotgunIndex = [];
+    });
   }
 
-  void checkUnselect(){
+
+  void checkUnselect([titleList]){
     if(selected.isEmpty){
       allUnselect = true;
+      resetAllList();
+      titleList.getColumNavigation[0] = '类型'; //重置右侧垂直导航的当前标题
+      titleList.isChangeOrNot[0] = false; //把垂直导航的List的当前标题标记回false
     }else{
       allUnselect = false;
     }
@@ -140,7 +68,7 @@ class _State extends State<TypePage> {
             padding: EdgeInsets.only(left: 12,top: maxHeight * 0.05),
             child: Container(
               alignment: Alignment.centerLeft,
-              child: Text('类型',style: TextStyle(fontSize: 16),),
+              child: const Text('类型',style: TextStyle(fontSize: 16),),
             ),
           ), //类型固定头部
           Expanded(
@@ -151,15 +79,19 @@ class _State extends State<TypePage> {
                         (BuildContext context, int index) {
                       return Container(
                         padding: const EdgeInsets.only(left: 12,right: 12),
-                        child: Container(
-                          height: 40,
+                        child: SizedBox(
+                          height: 35,
                           width: maxWidth,
                           // color: Colors.orange,
                           child: Row(
                             children: [
                               GestureDetector(
                                 onTap:(){
-
+                                  setState(() {
+                                    resetAllList(); //清空所有已经选择过的选项
+                                    checkUnselect(titleList);
+                                    titleList.reFresh(); //手动通知页面刷新
+                                  });
                                 },
                                 child:  Container(
                                   height: 35,
@@ -184,14 +116,14 @@ class _State extends State<TypePage> {
                     },
                     childCount: 1, // 设置子项数量
                   ),
-                ), //单独的不限按钮
+                ), //总的不限按钮
 
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       return Container(
                         // color: Colors.pink,
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: const Text('匕首',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
                       );
                     },
@@ -206,7 +138,7 @@ class _State extends State<TypePage> {
                         // alignment: Alignment.topCenter,
                         padding: const EdgeInsets.only(left: 12,right: 12),
                         child: GridView.builder(
-                          padding: EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           itemCount: knife.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -224,7 +156,7 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  knifeIndex = selectOption(item, knifeIndex, '匕首',titleList);
+                                  knifeIndex = selectOption(item, knifeIndex, '匕首',titleList,selected,0);
                                   checkUnselect();
                                   // print(knifeIndex);
                                   print(selected);
@@ -234,9 +166,9 @@ class _State extends State<TypePage> {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(2),
-                                  color: knifeIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                  color: knifeIndex.contains(item)? const Color.fromRGBO(238, 162, 14, 1):Colors.white,
                                   border: Border.all(
-                                    color: knifeIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                    color: knifeIndex.contains(item)? const Color.fromRGBO(238, 162, 14, 1):Colors.grey,
                                     width: 0.5,
                                   ),
                                 ),
@@ -256,7 +188,7 @@ class _State extends State<TypePage> {
                         (BuildContext context, int index) {
                       return Container(
                         // color: Colors.red,
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: const Text('手套',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
                       );
                     },
@@ -267,9 +199,9 @@ class _State extends State<TypePage> {
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       return Container(
-                        padding: EdgeInsets.only(left: 12,right: 12),
+                        padding: const EdgeInsets.only(left: 12,right: 12),
                         child: GridView.builder(
-                          padding: EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           itemCount: glove.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -287,7 +219,7 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  gloveIndex = selectOption(item, gloveIndex, '手套',titleList);
+                                  gloveIndex = selectOption(item, gloveIndex, '手套',titleList,selected,0);
                                   checkUnselect();
                                   print(gloveIndex);
                                   print(selected);
@@ -297,13 +229,13 @@ class _State extends State<TypePage> {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(2),
-                                  color: gloveIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                  color: gloveIndex.contains(item)? const Color.fromRGBO(238, 162, 14, 1):Colors.white,
                                   border: Border.all(
-                                    color: gloveIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                    color: gloveIndex.contains(item)? const Color.fromRGBO(238, 162, 14, 1):Colors.grey,
                                     width: 0.5,
                                   ),
                                 ),
-                                child: Text('${item}',style: TextStyle(fontSize: 12,color: gloveIndex.contains(item)? Colors.white:Colors.grey),),
+                                child: Text(item,style: TextStyle(fontSize: 12,color: gloveIndex.contains(item)? Colors.white:Colors.grey),),
                               ),
                             );
                           },
@@ -320,7 +252,7 @@ class _State extends State<TypePage> {
                         (BuildContext context, int index) {
                       return Container(
                         // color: Colors.red,
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: const Text('手枪',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
                       );
                     },
@@ -351,7 +283,7 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  pistolIndex = selectOption(item, pistolIndex, '手枪',titleList);
+                                  pistolIndex = selectOption(item, pistolIndex, '手枪',titleList,selected,0);
                                   checkUnselect();
                                   print(pistolIndex);
                                   print(selected);
@@ -385,7 +317,7 @@ class _State extends State<TypePage> {
                         (BuildContext context, int index) {
                       return Container(
                         // color: Colors.red,
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: const Text('微型冲锋枪',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
                       );
                     },
@@ -396,9 +328,9 @@ class _State extends State<TypePage> {
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       return Container(
-                        padding: EdgeInsets.only(left: 12,right: 12),
+                        padding: const EdgeInsets.only(left: 12,right: 12),
                         child: GridView.builder(
-                          padding: EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           itemCount: submachineGun.length,  //list
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -416,9 +348,9 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  submachineGunIndex = selectOption(item, submachineGunIndex, '冲锋枪',titleList);
+                                  submachineGunIndex = selectOption(item, submachineGunIndex, '冲锋枪',titleList,selected,0);
                                   checkUnselect();
-                                  print(submachineGunIndex);
+                                  // print(submachineGunIndex);
                                   print(selected);
                                 });
                               },
@@ -426,13 +358,13 @@ class _State extends State<TypePage> {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(2),
-                                  color: submachineGunIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                  color: submachineGunIndex.contains(item)? const Color.fromRGBO(238, 162, 14, 1):Colors.white,
                                   border: Border.all(
-                                    color: submachineGunIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                    color: submachineGunIndex.contains(item)? const Color.fromRGBO(238, 162, 14, 1):Colors.grey,
                                     width: 0.5,
                                   ),
                                 ),
-                                child: Text('${item}',style: TextStyle(fontSize: 12,color: submachineGunIndex.contains(item)? Colors.white:Colors.grey),),
+                                child: Text(item,style: TextStyle(fontSize: 12,color: submachineGunIndex.contains(item)? Colors.white:Colors.grey),),
                               ),
                             );
                           },
@@ -449,7 +381,7 @@ class _State extends State<TypePage> {
                         (BuildContext context, int index) {
                       return Container(
                         // color: Colors.red,
-                        padding: EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(12),
                         child: const Text('霰弹枪',style: TextStyle(fontSize: 12,color: Color.fromRGBO(83, 124, 204, 1)),),
                       );
                     },
@@ -480,7 +412,7 @@ class _State extends State<TypePage> {
                             return GestureDetector(
                               onTap: (){
                                 setState(() {
-                                  shotgunIndex = selectOption(item, shotgunIndex, '霰弹枪',titleList);
+                                  shotgunIndex = selectOption(item, shotgunIndex, '霰弹枪',titleList,selected,0);
                                   checkUnselect();
                                   print(shotgunIndex);
                                   print(selected);
@@ -490,13 +422,13 @@ class _State extends State<TypePage> {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(2),
-                                  color: shotgunIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.white,
+                                  color: shotgunIndex.contains(item)? const Color.fromRGBO(238, 162, 14, 1):Colors.white,
                                   border: Border.all(
-                                    color: shotgunIndex.contains(item)? Color.fromRGBO(238, 162, 14, 1):Colors.grey,
+                                    color: shotgunIndex.contains(item)? const Color.fromRGBO(238, 162, 14, 1):Colors.grey,
                                     width: 0.5,
                                   ),
                                 ),
-                                child: Text('${item}',style: TextStyle(fontSize: 12,color: shotgunIndex.contains(item)? Colors.white:Colors.grey),),
+                                child: Text(item,style: TextStyle(fontSize: 12,color: shotgunIndex.contains(item)? Colors.white:Colors.grey),),
                               ),
                             );
                           },

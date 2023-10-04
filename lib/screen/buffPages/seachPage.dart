@@ -1,12 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:coffee/screen/buffPages/popularSkin.dart';
+import 'package:coffee/screen/buffPages/printed.dart';
 import 'package:coffee/screen/buffPages/typePage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../../stateManage/stateManage.dart';
-import '../../临时数据/测试.dart';
 
 class SeachPage extends StatefulWidget {
   const SeachPage({super.key});
@@ -16,7 +15,7 @@ class SeachPage extends StatefulWidget {
 }
 
 class _State extends State<SeachPage> {
-  int currentIndex = 0;      //indexStack的index
+  int currentIndex = 2;      //indexStack的index
 
   @override
   void dispose () {
@@ -24,6 +23,7 @@ class _State extends State<SeachPage> {
     //页面销毁时清空选择的数据
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<TitleList>(globalContext,listen:false).reset();
+      Provider.of<PrintFlower>(globalContext,listen: false).reset();
       print('已销毁');
     });
   }
@@ -35,8 +35,24 @@ class _State extends State<SeachPage> {
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
     final titleList = Provider.of<TitleList>(context);
+    final printFlower = Provider.of<PrintFlower>(context);
+
     List isChangeOrNot  = titleList.getIsChangeOrNot;
     List columNavigation = titleList.getColumNavigation;
+
+    getPrintFlower(int i){
+      if(i != 2){
+        return columNavigation[i];
+      }else if(i==2){
+        if(isChangeOrNot[2] == true){
+          return '自定义印花';
+        }else if(isChangeOrNot[2] == false){
+          return '已贴印花';
+        }
+      }
+    }
+
+
 
     return Material(
       child: Container(
@@ -61,11 +77,8 @@ class _State extends State<SeachPage> {
                          PopularSkin(),//热门皮肤
 
 
-                          Container(
-                            height: maxHeight,
-                            width: maxWidth,
-                            color: Colors.orange,
-                          ),
+                         Printed(),
+
                           Container(
                             height: maxHeight,
                             width: maxWidth,
@@ -128,20 +141,21 @@ class _State extends State<SeachPage> {
                                   border: Border(
                                     left: BorderSide(
                                       color: currentIndex == i? Colors.white:Colors.grey,
-                                      width: 0.5,
+                                      width: 1,
                                     ),
-                                    top: BorderSide(
-                                      color: currentIndex == i? Colors.grey:Colors.white,
-                                      width: 0,
-                                    ),
-                                    bottom: BorderSide(
-                                      color: currentIndex == i? Colors.grey:Colors.white,
-                                      width: 0,
-                                    ),
+                                    top: currentIndex == i? const BorderSide(
+                                      color:Colors.grey,
+                                      width: 1,
+                                    ):BorderSide.none,
+                                    bottom: currentIndex == i? const BorderSide(
+                                      color:Colors.grey,
+                                      width: 1,
+                                    ):BorderSide.none,
                                   ),
                                 ),
                                 child: Center(
                                   child:isChangeOrNot[i] == false?
+                                      // 做判断，如果已贴印花已选，显示的是自定义但是实际数据是要写选择的印花
                                   Text(
                                     '${columNavigation[i]}',
                                     style: TextStyle(
@@ -150,7 +164,7 @@ class _State extends State<SeachPage> {
                                     ),
                                   ):
                                   AutoSizeText(
-                                    '${columNavigation[i]}',
+                                    getPrintFlower(i),
                                       maxLines: 3,
                                       minFontSize: 12,
                                       style: const TextStyle(
@@ -198,6 +212,7 @@ class _State extends State<SeachPage> {
                           onTap: (){
                             //重置是直接跳页面的，跳完即使再调用本地的数据也重置了。
                             titleList.reset();
+                            printFlower.reset();
                           },
                           child: Container(
                             color: const Color.fromRGBO(69, 83, 108, 1),
@@ -221,7 +236,7 @@ class _State extends State<SeachPage> {
                             }
                           }
                           titleList.reset();
-                          print(mid);
+                          print('来自seachPage的打印：$mid');
                           Navigator.pop(context);
                         },
                         child: Container(

@@ -1,4 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:coffee/screen/buffPages/printFlowerSeachPage.dart';
+import 'package:coffee/screen/buffPages/seachPage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'bottomNavigationBar/bottomNavigationBar.dart';
@@ -13,7 +15,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider<TitleList>(create: (_) => TitleList()),
-        // ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ChangeNotifierProvider<PrintFlower>(create: (_) => PrintFlower()),
         // ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
         // ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
       ],
@@ -30,9 +32,11 @@ class MyApp extends StatelessWidget {
       builder: BotToastInit(),  //toast配置
       navigatorObservers: [BotToastNavigatorObserver()],  //toast配置
       debugShowCheckedModeBanner: false,
-      initialRoute: '/bottomNavigationBar',
+      initialRoute: '/seachPage',
       routes: {
         '/bottomNavigationBar': (context) => const bottomNavigationBar(),
+        '/seachPage':(context) => const SeachPage(),
+        '/printFlowerSeachPage':(context)=> const PrintFlowerSeachPage(),
       },
     );
   }
